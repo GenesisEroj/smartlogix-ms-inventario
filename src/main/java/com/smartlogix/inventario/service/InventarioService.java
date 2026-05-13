@@ -1,5 +1,6 @@
 package com.smartlogix.inventario.service;
 
+import com.smartlogix.inventario.dto.ProductoDTO;
 import com.smartlogix.inventario.model.Producto;
 import com.smartlogix.inventario.repository.ProductoRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,12 @@ public class InventarioService {
     }
 
     // CQRS - Query
+    public Producto obtenerPorId(Long id) {
+        return productoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado: " + id));
+    }
+
+    // CQRS - Query
     public Producto obtenerPorProductoId(String productoId) {
         return productoRepository.findByProductoId(productoId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado: " + productoId));
@@ -42,6 +49,20 @@ public class InventarioService {
     public Producto actualizarStock(String productoId, Integer cantidad) {
         Producto producto = obtenerPorProductoId(productoId);
         producto.setStock(producto.getStock() + cantidad);
+        return productoRepository.save(producto);
+    }
+
+    // CQRS - Command
+    public Producto actualizarProducto(Long id, ProductoDTO dto) {
+        Producto producto = obtenerPorId(id);
+        if (dto.getNombre() != null)
+            producto.setNombre(dto.getNombre());
+        if (dto.getPrecio() != null)
+            producto.setPrecio(dto.getPrecio());
+        if (dto.getStock() != null)
+            producto.setStock(dto.getStock());
+        if (dto.getCategoria() != null)
+            producto.setCategoria(dto.getCategoria());
         return productoRepository.save(producto);
     }
 

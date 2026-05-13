@@ -1,5 +1,6 @@
 package com.smartlogix.inventario.controller;
 
+import com.smartlogix.inventario.dto.ProductoDTO;
 import com.smartlogix.inventario.model.Producto;
 import com.smartlogix.inventario.service.InventarioService;
 import lombok.RequiredArgsConstructor;
@@ -41,8 +42,15 @@ public class InventarioController {
         return ResponseEntity.ok(inventarioService.obtenerStockBajo(limite));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Producto> actualizarProducto(@PathVariable Long id,
+            @RequestBody ProductoDTO dto) {
+        return ResponseEntity.ok(inventarioService.actualizarProducto(id, dto));
+    }
+
     @PutMapping("/{productoId}/stock")
-    public ResponseEntity<Producto> actualizarStock(@PathVariable String productoId, @RequestParam Integer cantidad) {
+    public ResponseEntity<Producto> actualizarStock(@PathVariable String productoId,
+            @RequestParam Integer cantidad) {
         return ResponseEntity.ok(inventarioService.actualizarStock(productoId, cantidad));
     }
 
